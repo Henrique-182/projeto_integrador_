@@ -52,4 +52,21 @@ public class PessoaPainel {
 
 		return pessoa;
 	}
+
+	public static String getCPF() {
+		String cpf = "";
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridLayout(6, 2));
+
+		panel.add(new JLabel("CPF: "));
+		panel.add(new JTextField());
+
+		int result = JOptionPane.showConfirmDialog(null, panel, "Preencha os dados", JOptionPane.OK_CANCEL_OPTION);
+
+		if (result == JOptionPane.OK_OPTION) {
+			cpf = ((JTextField) panel.getComponent(1)).getText();
+		}
+
+		return cpf;
+	}
 }

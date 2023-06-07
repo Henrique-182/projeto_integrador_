@@ -8,6 +8,8 @@ import java.sql.Statement;
 
 import javax.swing.JOptionPane;
 
+import com.mysql.cj.protocol.Resultset;
+
 import conexao.Conexao;
 import painel.EnderecoPainel;
 import painel.PessoaPainel;
@@ -95,7 +97,6 @@ public class PessoaCRUD {
 				}
 				
 				if(!retornouRegistros) {
-					JOptionPane.showMessageDialog(null, "NÃO HÁ MAIS REGISTROS", "Todas as Pessoas", 1);
 					break;
 				}
 				
@@ -176,6 +177,57 @@ public class PessoaCRUD {
 		 
 		statement.close();
 	}
+
+	public static void selectPorCPF(Connection connection) throws SQLException {
+		String cpfWhere = PessoaPainel.getCPF();
+		
+		String query = "SELECT * FROM pessoa p WHERE p.cpf like ?";
+		
+		PreparedStatement preparedStatement = connection.prepareStatement(query);
+		preparedStatement.setString(1, "%"+cpfWhere+"%");
+		
+		ResultSet resultSet = preparedStatement.executeQuery();
+		
+		StringBuilder sb = new StringBuilder();
+		while(resultSet.next()) {
+			
+			Integer id = resultSet.getInt("id_pessoa");
+			String nome = resultSet.getString("nome");
+			String sobrenome = resultSet.getString("sobrenome");
+			String cpf = resultSet.getString("cpf");
+			String separador = "=-=-=-=-=-=-=-=-=-=-=-=-= id: " + id + " =-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
+			
+			String s = "Nome: " + nome + " " + sobrenome + "\n"
+					+ "CPF: " + cpf + "\n";
+			
+			sb.append(separador);
+			sb.append(s);
+		}
+		
+		JOptionPane.showMessageDialog(null, sb, "Pessoas por CPF:", 1);
+		
+		preparedStatement.close();
+	}
+
+	public static void selectPorIdade(Connection connection) throws SQLException {
+		try {
+			connection = Conexao.createConnection();
+		} catch(Exception e) {
+
+		} finally {
+			connection.close();
+		}
+	}
+
+	public static void selectPorNome(Connection connection) throws SQLException {
+		try {
+			connection = Conexao.createConnection();
+		} catch(Exception e) {
+
+		} finally {
+			connection.close();
+		}
+	}
 	
 	public static void selectComEndereco() throws SQLException {
 		Statement statement = connection.createStatement();
@@ -205,6 +257,8 @@ public class PessoaCRUD {
 		statement.close();
 	}
 	
+	
+
 	public static void update(String coluna, String novoValor, Integer id) throws SQLException {
 			String query = "UPDATE pessoa "
 					+ " SET " + coluna + " = ?"

@@ -77,7 +77,7 @@ public class Pessoa {
 			
 			PessoaCRUD.selectPorEstado(connection);
 			
-			JOptionPane.showMessageDialog(null, "NÃO HÁ MAIS NENHUM REGISTRO DE PESSOA", "Pessoas por Estado", 2);
+			JOptionPane.showMessageDialog(null, "NÃO HÁ MAIS NENHUM REGISTRO DE PESSOA", "Pessoas por CPF", 2);
 		} catch (Exception e) {
 			
 		} finally {
@@ -98,6 +98,7 @@ public class Pessoa {
 			connection.close();
 		}
 	}
+	
 	public static void consultarPorNome() throws SQLException {
 		try {
 			connection = Conexao.createConnection();
@@ -119,7 +120,7 @@ public class Pessoa {
 			
 			JOptionPane.showMessageDialog(null, "NÃO HÁ MAIS NENHUM REGISTRO DE PESSOA", "Pessoas por Estado", 2);
 		} catch (Exception e) {
-			
+			JOptionPane.showMessageDialog(null, "ERRO AO CONSULTAR POR CPF", "Erro", 0);
 		} finally {
 			connection.close();
 		}
