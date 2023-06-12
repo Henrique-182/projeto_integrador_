@@ -1,10 +1,8 @@
-package vacinacao.cadastros;
+package vacinacao;
 
 import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
-
-import vacinacao.consultas.Pessoa;
 
 public class Cadastro {
 
@@ -30,10 +28,10 @@ public class Cadastro {
 				Pessoa.cadastrar();
 				break;
 			case "2":
-				CentroCadastro.cadastrar();
+				Centro.cadastrar();
 				break;
 			case "3":
-				VacinaCadastro.cadastrar();
+				Vacina.cadastrar();
 				break;
 			default:
 				JOptionPane.showMessageDialog(null, "MENU INVÁLIDO", "Inválido", 0);

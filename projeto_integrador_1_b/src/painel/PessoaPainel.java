@@ -1,6 +1,8 @@
 package painel;
 
 import java.awt.GridLayout;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -8,21 +10,20 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import com.toedter.calendar.JDateChooser;
+
 public class PessoaPainel {
-	
-	private static final String[] DDD = { "068", "082", "096", "092", "097", "071", "073", "074", "075", "077", "085",
-			"088", "061", "027", "028", "062", "064", "098", "099", "065", "066", "067", "031", "032", "033", "034",
-			"035", "037", "038", "091", "093", "083", "041", "042", "043", "044", "045", "046", "081", "087", "086",
-			"089", "021", "022", "024", "084", "051", "053", "054", "055", "069", "095", "047", "048", "049", "011",
-			"012", "013", "014", "015", "016", "017", "018", "019", "079", "063" };
+
+	private static final String[] DDD = { "011", "021", "027", "031", "041", "047", "051", "061", "062", "063", "065",
+			"067", "068", "069", "071", "079", "081", "082", "083", "084", "085", "086", "091", "092", "095", "096",
+			"098" };
 
 	public static String[] novo() {
-		String[] pessoa = { "", "", "", "" };
+		String[] pessoa = new String[5];
 
 		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(6, 2));
+		panel.setLayout(new GridLayout(7, 2));
 
-		
 		panel.add(new JLabel("CPF: "));
 		panel.add(new JTextField());
 		panel.add(new JLabel("Nome:"));
@@ -34,6 +35,9 @@ public class PessoaPainel {
 		panel.add(dddComboBox);
 		panel.add(new JLabel("Telefone:"));
 		panel.add(new JTextField());
+		panel.add(new JLabel("Data de Nascimento: "));
+		JDateChooser dateChooser = new JDateChooser();
+		panel.add(dateChooser);
 
 		int result = JOptionPane.showConfirmDialog(null, panel, "Preencha os dados", JOptionPane.OK_CANCEL_OPTION);
 
@@ -43,11 +47,14 @@ public class PessoaPainel {
 			String sobrenome = ((JTextField) panel.getComponent(5)).getText();
 			String ddd = (String) dddComboBox.getSelectedItem();
 			String numero = ((JTextField) panel.getComponent(9)).getText();
+			Date dataNascimento = ((JDateChooser) panel.getComponent(11)).getDate();
 
 			pessoa[0] = cpf;
 			pessoa[1] = nome;
 			pessoa[2] = sobrenome;
 			pessoa[3] = "55" + ddd + numero;
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			pessoa[4] = simpleDateFormat.format(dataNascimento);
 		}
 
 		return pessoa;
@@ -55,6 +62,7 @@ public class PessoaPainel {
 
 	public static String getCPF() {
 		String cpf = "";
+
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(6, 2));
 
@@ -68,5 +76,47 @@ public class PessoaPainel {
 		}
 
 		return cpf;
+	}
+
+	public static String[] getNome() {
+		String[] nomeCompleto = new String[2];
+
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridLayout(6, 2));
+
+		panel.add(new JLabel("Primeiro Nome: "));
+		panel.add(new JTextField());
+		panel.add(new JLabel("Sobrenome: "));
+		panel.add(new JTextField());
+
+		int result = JOptionPane.showConfirmDialog(null, panel, "Preencha os dados", JOptionPane.OK_CANCEL_OPTION);
+
+		if (result == JOptionPane.OK_OPTION) {
+			nomeCompleto[0] = ((JTextField) panel.getComponent(1)).getText();
+			nomeCompleto[1] = ((JTextField) panel.getComponent(3)).getText();
+		}
+
+		return nomeCompleto;
+	}
+
+	public static String[] getIdade() {
+		String[] idades = new String[2];
+
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridLayout(6, 2));
+
+		panel.add(new JLabel("Maior que: "));
+		panel.add(new JTextField());
+		panel.add(new JLabel("Menor que: "));
+		panel.add(new JTextField());
+
+		int result = JOptionPane.showConfirmDialog(null, panel, "Idade é: ", JOptionPane.OK_CANCEL_OPTION);
+
+		if (result == JOptionPane.OK_OPTION) {
+			idades[0] = ((JTextField) panel.getComponent(1)).getText();
+			idades[1] = ((JTextField) panel.getComponent(3)).getText();
+		}
+
+		return idades;
 	}
 }

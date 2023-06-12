@@ -4,9 +4,6 @@ import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
 
-import vacinacao.cadastros.Cadastro;
-import vacinacao.consultas.Consulta;
-
 public class Vacinacao {
 
 	public static void main(String[] args) throws SQLException {
@@ -21,7 +18,7 @@ public class Vacinacao {
 					"0- Sair\n"
 					+ "1- Consultar\n"
 					+ "2- Cadastrar\n"
-					+ "3- Marcar\n\n"
+					+ "3- Agendar Vacinação\n\n"
 					+ "Digite: ", 
 					"Menu Principal", 
 					3
@@ -40,10 +37,6 @@ public class Vacinacao {
 				Cadastro.cadastrar();
 				break;
 			case "3":
-				break;
-			case "4":
-				JOptionPane.showMessageDialog(null, "SAINDO");
-				continuaMenuPrincipal = false;
 				break;
 			default:
 				JOptionPane.showMessageDialog(null, "MENU INVÁLIDO", "Inválido", 0);

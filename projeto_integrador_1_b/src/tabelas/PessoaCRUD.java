@@ -8,49 +8,10 @@ import java.sql.Statement;
 
 import javax.swing.JOptionPane;
 
-import com.mysql.cj.protocol.Resultset;
-
-import conexao.Conexao;
 import painel.EnderecoPainel;
 import painel.PessoaPainel;
-import view.View;
 
 public class PessoaCRUD {
-	
-	private static Connection connection;
-	
-	public PessoaCRUD() {}
-	
-	public StringBuilder select() throws SQLException {
-		connection = Conexao.createConnection();
-		Statement statement = connection.createStatement();
-
-		String query = "SELECT * FROM pessoa";
-		
-		ResultSet resultSet = statement.executeQuery(query);
-		
-		StringBuilder sb = new StringBuilder();
-		
-		while(resultSet.next()) {
-			Integer id = resultSet.getInt("id_pessoa");
-			String cpf = resultSet.getString("cpf");
-			String nome = resultSet.getString("nome");
-			String sobrenome = resultSet.getString("sobrenome");
-			String telefone = resultSet.getString("telefone");
-			String separador = "=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
-			
-			String s = id + "ª: (" + cpf + ") " + nome + " " + sobrenome + " (" + telefone + ")\n";
-			
-			sb.append(s);
-			sb.append(separador);
-		}
-		
-		resultSet.close();
-		statement.close();
-		connection.close();
-		
-		return sb;
-	}
 	
 	public static void selectPaginado(Connection connection) throws SQLException {
 		Statement statement = connection.createStatement();
@@ -68,7 +29,7 @@ public class PessoaCRUD {
 			} else {
 				String querySetIdMinimo = "set @idMinimo = (SELECT min(id_pessoa) FROM pessoa where id_pessoa > @idMaximo LIMIT 8)";
 				String querySetIdMaximo = "set @idMaximo = (SELECT MAX(id_pessoa) as id_maximo FROM (SELECT id_pessoa FROM pessoa where id_pessoa > @idMaximo LIMIT 8) as subquery)";
-				String query = "select * from pessoa where id_pessoa between @idMinimo and @idMaximo;";
+				String query = "select id_pessoa, cpf, nome, sobrenome from pessoa where id_pessoa between @idMinimo and @idMaximo;";
 				
 				statement.execute(querySetIdMinimo);
 				statement.execute(querySetIdMaximo);
@@ -85,12 +46,10 @@ public class PessoaCRUD {
 					String cpf = resultSet.getString("cpf");
 					String nome = resultSet.getString("nome");
 					String sobrenome = resultSet.getString("sobrenome");
-					String telefone = resultSet.getString("telefone");
 					String separador = "=-=-=-=-=-=-=-=-=-=-=- id: " + id + " -=-=-=-=-=-=-=-=-=-=-=-=\n";
 					
 					String s = "CPF: " + cpf + "\n"
-							+ "Nome: " + nome + " " + sobrenome + "\n"
-							+ "Telefone: " + telefone + "\n";
+							+ "Nome: " + nome + " " + sobrenome + "\n";
 					
 					sb.append(separador);
 					sb.append(s);
@@ -107,11 +66,13 @@ public class PessoaCRUD {
 			}
 		}
 		statement.close();
-		connection.close();
 	}
 	
 	public static void selectPorEstado(Connection connection) throws SQLException {
 		Statement statement = connection.createStatement();
+		
+		String estadoWhere = EnderecoPainel.getEstado();
+		
 		Integer i = 0;
 		while(true) {
 			if(i == 0) {
@@ -122,22 +83,17 @@ public class PessoaCRUD {
 				statement.execute(querySetIdMinimo);
 				statement.execute(querySetIdMaximo);
 			} else {
-				String estadoWhere = EnderecoPainel.getEstado();
-				
-				String querySetIdMinimo = "set @idMinimo = (SELECT min(id_pessoa) FROM pessoa where id_pessoa > @idMaximo LIMIT 3)";
-				String querySetIdMaximo = "set @idMaximo = (SELECT MAX(id_pessoa) as id_maximo FROM (SELECT id_pessoa FROM pessoa where id_pessoa > @idMaximo LIMIT 3) as subquery)";
-				String query = "SELECT * FROM pessoa p"
+				String querySetIdMinimo = "set @idMinimo = (SELECT MIN(p.id_pessoa) FROM pessoa p LEFT JOIN endereco_pessoa e ON e.id_endereco_pessoa = p.fk_id_endereco_pessoa WHERE e.estado = '" + estadoWhere + "' AND p.id_pessoa > @idMaximo LIMIT 3)";
+				String querySetIdMaximo = "set @idMaximo = (SELECT MAX(id_pessoa) as id_maximo FROM (SELECT p.id_pessoa FROM pessoa p LEFT JOIN endereco_pessoa e ON e.id_endereco_pessoa = p.fk_id_endereco_pessoa WHERE e.estado = '" + estadoWhere + "' AND p.id_pessoa > @idMaximo LIMIT 3) as subquery)";
+				String query = "SELECT p.id_pessoa, p.nome, p.sobrenome, e.estado, e.cidade, e.bairro, e.cep, e.logradouro, e.complemento FROM pessoa p"
 						+ " LEFT JOIN endereco_pessoa e ON e.id_endereco_pessoa = p.fk_id_endereco_pessoa"
-						+ "	WHERE e.estado = ?"
-						+ " AND id_pessoa BETWEEN @idMinimo and @idMaximo";
+						+ "	WHERE e.estado = '" + estadoWhere + "' AND "
+						+ " p.id_pessoa BETWEEN @idMinimo and @idMaximo";
 				
 				statement.execute(querySetIdMinimo);
 				statement.execute(querySetIdMaximo);
 				
-				PreparedStatement preparedStatement = connection.prepareStatement(query);
-				preparedStatement.setString(1, estadoWhere);
-				
-				ResultSet resultSet = preparedStatement.executeQuery();
+				ResultSet resultSet = statement.executeQuery(query);
 				
 				boolean retornouRegistros = false;
 				
@@ -170,8 +126,8 @@ public class PessoaCRUD {
 				}
 				
 				JOptionPane.showMessageDialog(null, sb, "Pessoas por Estado:" + i + "ª página", 1);
+				i++;
 				
-				preparedStatement.close();
 			}
 		} 
 		 
@@ -179,87 +135,183 @@ public class PessoaCRUD {
 	}
 
 	public static void selectPorCPF(Connection connection) throws SQLException {
+		Statement statement = connection.createStatement();
+		
 		String cpfWhere = PessoaPainel.getCPF();
+		cpfWhere = "%" + cpfWhere + "%";
 		
-		String query = "SELECT * FROM pessoa p WHERE p.cpf like ?";
-		
-		PreparedStatement preparedStatement = connection.prepareStatement(query);
-		preparedStatement.setString(1, "%"+cpfWhere+"%");
-		
-		ResultSet resultSet = preparedStatement.executeQuery();
-		
-		StringBuilder sb = new StringBuilder();
-		while(resultSet.next()) {
-			
-			Integer id = resultSet.getInt("id_pessoa");
-			String nome = resultSet.getString("nome");
-			String sobrenome = resultSet.getString("sobrenome");
-			String cpf = resultSet.getString("cpf");
-			String separador = "=-=-=-=-=-=-=-=-=-=-=-=-= id: " + id + " =-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
-			
-			String s = "Nome: " + nome + " " + sobrenome + "\n"
-					+ "CPF: " + cpf + "\n";
-			
-			sb.append(separador);
-			sb.append(s);
-		}
-		
-		JOptionPane.showMessageDialog(null, sb, "Pessoas por CPF:", 1);
-		
-		preparedStatement.close();
+		Integer i = 0;
+		while(true) {
+			if(i == 0) {
+				i++;
+				String querySetIdMinimo = "set @idMinimo = 0";
+				String querySetIdMaximo = "set @idMaximo = 0" ;
+				
+				statement.execute(querySetIdMinimo);
+				statement.execute(querySetIdMaximo);
+			} else {
+				String querySetIdMinimo = "set @idMinimo = (SELECT min(id_pessoa) FROM pessoa WHERE cpf LIKE '" + cpfWhere + "' AND id_pessoa > @idMaximo LIMIT 3)";
+				String querySetIdMaximo = "set @idMaximo = (SELECT MAX(id_pessoa) as id_maximo FROM (SELECT id_pessoa FROM pessoa WHERE cpf LIKE '" + cpfWhere + "' AND id_pessoa > @idMaximo LIMIT 3) as subquery)";
+				String query = "SELECT id_pessoa, nome, sobrenome, cpf FROM pessoa"
+						+ " WHERE cpf LIKE '" + cpfWhere + "' AND "
+						+ " id_pessoa BETWEEN @idMinimo and @idMaximo";
+				
+				statement.execute(querySetIdMinimo);
+				statement.execute(querySetIdMaximo);
+				
+				ResultSet resultSet = statement.executeQuery(query);
+				
+				boolean retornouRegistros = false;
+				
+				StringBuilder sb = new StringBuilder();
+				while(resultSet.next()) {
+					retornouRegistros = true;
+					
+					Integer id = resultSet.getInt("id_pessoa");
+					String nome = resultSet.getString("nome");
+					String sobrenome = resultSet.getString("sobrenome");
+					String cpf = resultSet.getString("cpf");
+					String separador = "=-=-=-=-=-=-=-=-=-=-=-=-= id: " + id + " =-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
+					
+					String s = "Nome: " + nome + " " + sobrenome + "\n"
+							+ "CPF: " + cpf + "\n";
+					
+					sb.append(separador);
+					sb.append(s);
+				}
+				
+				if(!retornouRegistros) {
+					break;
+				}
+				
+				JOptionPane.showMessageDialog(null, sb, "Pessoas por CPF:" + i + "ª página", 1);
+				i++; 
+				
+			}
+		} 
+		 
+		statement.close();
 	}
 
 	public static void selectPorIdade(Connection connection) throws SQLException {
-		try {
-			connection = Conexao.createConnection();
-		} catch(Exception e) {
-
-		} finally {
-			connection.close();
-		}
+		Statement statement = connection.createStatement();
+		
+		String[] idadeWhere = PessoaPainel.getIdade();
+		int menorIdade = Integer.parseInt(idadeWhere[0]);
+		int maiorIdade = Integer.parseInt(idadeWhere[1]);
+		
+		Integer i = 0;
+		while(true) {
+			if(i == 0) {
+				i++;
+				String querySetIdMinimo = "set @idMinimo = 0";
+				String querySetIdMaximo = "set @idMaximo = 0" ;
+				
+				statement.execute(querySetIdMinimo);
+				statement.execute(querySetIdMaximo);
+			} else {
+				String querySetIdMinimo = "set @idMinimo = (SELECT MIN(id_pessoa) FROM pessoa WHERE TIMESTAMPDIFF(YEAR, data_nascimento, curdate()) >= " + menorIdade + " AND TIMESTAMPDIFF(YEAR, data_nascimento, curdate()) <= " + maiorIdade + " AND id_pessoa > @idMaximo LIMIT 5)";
+				String querySetIdMaximo = "set @idMaximo = (SELECT MAX(id_pessoa) as id_maximo FROM (SELECT id_pessoa FROM pessoa WHERE TIMESTAMPDIFF(YEAR, data_nascimento, curdate()) >= " + menorIdade + " AND TIMESTAMPDIFF(YEAR, data_nascimento, curdate()) <= " + maiorIdade + " AND id_pessoa > @idMaximo LIMIT 5) as subquery)";
+				String query = "SELECT id_pessoa, nome, sobrenome, TIMESTAMPDIFF(YEAR, data_nascimento, curdate()) AS idade FROM pessoa"
+						+ "	WHERE TIMESTAMPDIFF(YEAR, data_nascimento, curdate()) >= " + menorIdade
+						+ " AND TIMESTAMPDIFF(YEAR, data_nascimento, curdate()) <= " + maiorIdade
+						+ " AND id_pessoa BETWEEN @idMinimo and @idMaximo";
+				
+				statement.execute(querySetIdMinimo);
+				statement.execute(querySetIdMaximo);
+				
+				ResultSet resultSet = statement.executeQuery(query);
+				
+				boolean retornouRegistros = false;
+				
+				StringBuilder sb = new StringBuilder();
+				while(resultSet.next()) {
+					retornouRegistros = true;
+					
+					Integer id = resultSet.getInt("id_pessoa");
+					String nome = resultSet.getString("nome");
+					String sobrenome = resultSet.getString("sobrenome");
+					Integer idade = resultSet.getInt("idade");
+					String separador = "=-=-=-=-=-=-=-=-=-=-=-=-= id: " + id + " =-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
+					
+					String s = "Nome: " + nome + " " + sobrenome + "\n"
+							+ "Idade: " + idade + "\n";
+					
+					sb.append(separador);
+					sb.append(s);
+				}
+				
+				if(!retornouRegistros) {
+					break;
+				}
+				
+				JOptionPane.showMessageDialog(null, sb, "Pessoas por Nome:" + i + "ª página", 1);
+				i++;
+			}
+		} 
+		 
+		statement.close();
 	}
 
 	public static void selectPorNome(Connection connection) throws SQLException {
-		try {
-			connection = Conexao.createConnection();
-		} catch(Exception e) {
-
-		} finally {
-			connection.close();
-		}
-	}
-	
-	public static void selectComEndereco() throws SQLException {
 		Statement statement = connection.createStatement();
 		
-		String query = "SELECT * FROM pessoa p"
-				+ " LEFT JOIN endereco_pessoa e ON e.id_endereco_pessoa = p.fk_id_endereco_pessoa";
+		String[] nomeWhere = PessoaPainel.getNome();
+		String primeiroNome = "%" + nomeWhere[0] + "%";
+		String sobrenome = "%" + nomeWhere[1] + "%";
 		
-		ResultSet resultSet = statement.executeQuery(query);
-		
-		while(resultSet.next()) {
-			Integer id = resultSet.getInt("id_pessoa");
-			String cpf = resultSet.getString("cpf");
-			String nome = resultSet.getString("nome");
-			String sobrenome = resultSet.getString("sobrenome");
-			String telefone = resultSet.getString("telefone");
-			String estado = resultSet.getString("estado");
-			String cidade = resultSet.getString("cidade");
-			String bairro = resultSet.getString("bairro");
-			String cep = resultSet.getString("cep");
-			String logradouro = resultSet.getString("logradouro");
-			String complemento = resultSet.getString("complemento");
-			View.formataPessoaComEndereco(cpf, nome, sobrenome, telefone, estado, cidade, bairro, cep, logradouro, complemento);
-			System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=");
-		}
-		
-		resultSet.close();
+		Integer i = 0;
+		while(true) {
+			if(i == 0) {
+				i++;
+				String querySetIdMinimo = "set @idMinimo = 0";
+				String querySetIdMaximo = "set @idMaximo = 0" ;
+				
+				statement.execute(querySetIdMinimo);
+				statement.execute(querySetIdMaximo);
+			} else {
+				String querySetIdMinimo = "set @idMinimo = (SELECT MIN(id_pessoa) FROM pessoa WHERE (nome LIKE '" + primeiroNome + "' AND sobrenome LIKE '" + sobrenome + "') AND id_pessoa > @idMaximo LIMIT 3)";
+				String querySetIdMaximo = "set @idMaximo = (SELECT MAX(id_pessoa) as id_maximo FROM (SELECT id_pessoa FROM pessoa WHERE (nome LIKE '" + primeiroNome + "' AND sobrenome LIKE '" + sobrenome + "') AND id_pessoa > @idMaximo LIMIT 3) as subquery)";
+				String query = "SELECT id_pessoa, nome, sobrenome, cpf FROM pessoa"
+						+ "	WHERE (nome LIKE '" + primeiroNome + "' AND sobrenome LIKE '" + sobrenome + "')"
+						+ " AND id_pessoa BETWEEN @idMinimo and @idMaximo";
+				
+				statement.execute(querySetIdMinimo);
+				statement.execute(querySetIdMaximo);
+				
+				ResultSet resultSet = statement.executeQuery(query);
+				
+				boolean retornouRegistros = false;
+				
+				StringBuilder sb = new StringBuilder();
+				while(resultSet.next()) {
+					retornouRegistros = true;
+					
+					Integer id = resultSet.getInt("id_pessoa");
+					String nomeCompleto = resultSet.getString("nome") + " " + resultSet.getString("sobrenome");
+					String cpf = resultSet.getString("cpf");
+					String separador = "=-=-=-=-=-=-=-=-=-=-=-=-= id: " + id + " =-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
+					
+					String s = "Nome: " + nomeCompleto + "\n"
+							+ "CPF: " + cpf + "\n";
+					
+					sb.append(separador);
+					sb.append(s);
+				}
+				
+				if(!retornouRegistros) {
+					break;
+				}
+				
+				JOptionPane.showMessageDialog(null, sb, "Pessoas por Nome:" + i + "ª página", 1);
+				i++;
+			}
+		} 
+		 
 		statement.close();
 	}
-	
-	
 
-	public static void update(String coluna, String novoValor, Integer id) throws SQLException {
+	public static void update(Connection connection, String coluna, String novoValor, Integer id) throws SQLException {
 			String query = "UPDATE pessoa "
 					+ " SET " + coluna + " = ?"
 					+ " WHERE id_pessoa = ?";
@@ -279,8 +331,8 @@ public class PessoaCRUD {
 	public static void insert(Connection connection, Integer idEndereco) throws SQLException {
 		String[] pessoa = PessoaPainel.novo();
 		String query = "INSERT INTO "
-				+ " pessoa(cpf, nome, sobrenome, fk_id_endereco_pessoa, telefone)"
-				+ " VALUES(?, ?, ?, ?, ?)";
+				+ " pessoa(cpf, nome, sobrenome, fk_id_endereco_pessoa, telefone, data_nascimento)"
+				+ " VALUES(?, ?, ?, ?, ?, ?)";
 		
 		PreparedStatement statement = connection.prepareStatement(query);
 		statement.setString(1, pessoa[0]);
@@ -288,6 +340,7 @@ public class PessoaCRUD {
 		statement.setString(3, pessoa[2]);
 		statement.setInt(4, idEndereco);
 		statement.setString(5, pessoa[3]);
+		statement.setString(6, pessoa[4]);
 		
 		statement.executeUpdate();
 		

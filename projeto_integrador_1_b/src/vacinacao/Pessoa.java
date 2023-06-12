@@ -1,4 +1,4 @@
-package vacinacao.consultas;
+package vacinacao;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -32,8 +32,6 @@ public class Pessoa {
 			
 			switch(menuConsultaPessoa) {
 			case "0":
-				JOptionPane.showMessageDialog(null, "VOLTANDO AO MENU CONSULTAS");
-				connection.close();
 				continuaMenuConsultaPessoa = false;
 				break;
 			case "1":
@@ -77,9 +75,10 @@ public class Pessoa {
 			
 			PessoaCRUD.selectPorEstado(connection);
 			
-			JOptionPane.showMessageDialog(null, "NÃO HÁ MAIS NENHUM REGISTRO DE PESSOA", "Pessoas por CPF", 2);
+			JOptionPane.showMessageDialog(null, "NÃO HÁ MAIS NENHUM REGISTRO DE PESSOA", "Pessoas por Estado", 2);
 		} catch (Exception e) {
-			
+			System.out.println(e.getMessage());
+			JOptionPane.showMessageDialog(null, "ERRO AO CONSULTAR PESSOAS", "Erro", 0);
 		} finally {
 			connection.close();
 		}
@@ -91,9 +90,10 @@ public class Pessoa {
 			
 			PessoaCRUD.selectPorIdade(connection);
 			
-			JOptionPane.showMessageDialog(null, "NÃO HÁ MAIS NENHUM REGISTRO DE PESSOA", "Pessoas por Estado", 2);
+			JOptionPane.showMessageDialog(null, "NÃO HÁ MAIS NENHUM REGISTRO DE PESSOA", "Pessoas por Idade", 2);
 		} catch (Exception e) {
-			
+			System.out.println(e.getMessage());
+			JOptionPane.showMessageDialog(null, "ERRO AO CONSULTAR PESSOAS", "Erro", 0);
 		} finally {
 			connection.close();
 		}
@@ -107,11 +107,13 @@ public class Pessoa {
 			
 			JOptionPane.showMessageDialog(null, "NÃO HÁ MAIS NENHUM REGISTRO DE PESSOA", "Pessoas por Estado", 2);
 		} catch (Exception e) {
-			
+			System.out.println(e.getMessage());
+			JOptionPane.showMessageDialog(null, "ERRO AO CONSULTAR PESSOAS", "Erro", 0);
 		} finally {
 			connection.close();
 		}
 	}
+	
 	public static void consultarPorCPF() throws SQLException {
 		try {
 			connection = Conexao.createConnection();
@@ -130,8 +132,7 @@ public class Pessoa {
 		try {
 			connection = Conexao.createConnection();
 			
-			EnderecoPessoaCRUD endereco = new EnderecoPessoaCRUD(connection);
-			Integer idEndereco = endereco.getIdEndereco();
+			Integer idEndereco = EnderecoPessoaCRUD.getIdEndereco(connection);
 			
 			PessoaCRUD.insert(connection, idEndereco);
 			

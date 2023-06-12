@@ -15,7 +15,7 @@ public class EnderecoPainel {
 
 
 	public static String[] novo() {
-		String[] endereco = {"", ""};
+		String[] endereco = {"", "", "", "", "", ""};
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(6, 2));

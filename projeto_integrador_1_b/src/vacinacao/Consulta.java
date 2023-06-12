@@ -1,11 +1,8 @@
-package vacinacao.consultas;
+package vacinacao;
 
 import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
-
-import vacinacao.Centro;
-import vacinacao.Vacina;
 
 public class Consulta {
 
@@ -27,7 +24,6 @@ public class Consulta {
 				Pessoa.consultasDisponiveis();
 				break;
 			case "2":
-				JOptionPane.showMessageDialog(null, "CONSULTAR CENTROS DE VACINAÇÃO");
 				Centro.consultasDisponiveis();
 				break;
 			case "3":

@@ -10,14 +10,7 @@ import painel.EnderecoPainel;
 
 public class EnderecoPessoaCRUD {
 	
-	private static Connection connection;
-	
-	public EnderecoPessoaCRUD(Connection connection) {
-		EnderecoPessoaCRUD.connection = connection;
-	}
-
-
-	public Integer getIdEndereco() throws SQLException {
+	public static Integer getIdEndereco(Connection connection) throws SQLException {
 		String[] endereco = EnderecoPainel.novo();
 		String estado = endereco[0];
 		String cidade = endereco[1];
@@ -26,7 +19,7 @@ public class EnderecoPessoaCRUD {
 		String logradouro = endereco[4];
 		String complemento = endereco[5];
 		
-		Integer id = getIdEnderecoExistente(estado, cidade, bairro, cep, logradouro, complemento);
+		Integer id = getIdEnderecoExistente(estado, cidade, bairro, cep, logradouro, complemento, connection);
 
 		if(id != 0) {
 			return id;
@@ -60,7 +53,8 @@ public class EnderecoPessoaCRUD {
 			String bairro,
 			String cep,
 			String logradouro,
-			String complemento
+			String complemento,
+			Connection connection
 			) throws SQLException {
 		
 		String query = "SELECT id_endereco_pessoa"

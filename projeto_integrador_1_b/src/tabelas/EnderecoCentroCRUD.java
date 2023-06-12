@@ -10,13 +10,7 @@ import painel.EnderecoPainel;
 
 public class EnderecoCentroCRUD {
 	
-	private static Connection connection;
-	
-	public EnderecoCentroCRUD(Connection connection) {
-		EnderecoCentroCRUD.connection = connection;
-	}
-
-	public Integer createAndGetIdEndereco() throws SQLException {
+	public static Integer createEGetIdEndereco(Connection connection) throws SQLException {
 		String[] endereco = EnderecoPainel.novo();
 		String estado = endereco[0];
 		String cidade = endereco[1];
