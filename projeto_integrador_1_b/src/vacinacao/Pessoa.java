@@ -63,6 +63,7 @@ public class Pessoa {
 			
 			JOptionPane.showMessageDialog(null, "NÃO HÁ MAIS NENHUM REGISTRO DE PESSOA", "Todas as Pessoas", 2);
 		} catch (Exception e) {
+			System.out.println(e.getMessage());
 			JOptionPane.showMessageDialog(null, "ERRO AO CONSULTAR PESSOAS", "Erro", 0);
 		} finally {
 			connection.close();

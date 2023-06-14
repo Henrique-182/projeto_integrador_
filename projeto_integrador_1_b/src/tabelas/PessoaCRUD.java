@@ -19,20 +19,13 @@ public class PessoaCRUD {
 		Integer i = 0;
 		while(true) {
 			if(i == 0) {
-				i++;
-				String querySetIdMinimo = "set @idMinimo = 0";
-				String querySetIdMaximo = "set @idMaximo = 0" ;
-				
-				statement.execute(querySetIdMinimo);
+				String querySetIdMaximo = "set @idMaximo = 0";
 				statement.execute(querySetIdMaximo);
+				
+				i++;
 				
 			} else {
-				String querySetIdMinimo = "set @idMinimo = (SELECT min(id_pessoa) FROM pessoa where id_pessoa > @idMaximo LIMIT 8)";
-				String querySetIdMaximo = "set @idMaximo = (SELECT MAX(id_pessoa) as id_maximo FROM (SELECT id_pessoa FROM pessoa where id_pessoa > @idMaximo LIMIT 8) as subquery)";
-				String query = "select id_pessoa, cpf, nome, sobrenome from pessoa where id_pessoa between @idMinimo and @idMaximo;";
-				
-				statement.execute(querySetIdMinimo);
-				statement.execute(querySetIdMaximo);
+				String query = "SELECT id_pessoa, cpf, nome, sobrenome FROM pessoa where id_pessoa > @idMaximo LIMIT 8";
 				
 				ResultSet resultSet = statement.executeQuery(query);
 				
@@ -56,6 +49,7 @@ public class PessoaCRUD {
 				}
 				
 				if(!retornouRegistros) {
+					statement.close();
 					break;
 				}
 				
@@ -63,9 +57,13 @@ public class PessoaCRUD {
 				i++;
 					
 				resultSet.close();
+				
+				String querySetIdMaximo = "set @idMaximo = (SELECT MAX(id_pessoa) as id_maximo FROM (SELECT id_pessoa FROM pessoa where id_pessoa > @idMaximo LIMIT 8) as subquery)";
+				
+				statement.execute(querySetIdMaximo);
 			}
 		}
-		statement.close();
+		
 	}
 	
 	public static void selectPorEstado(Connection connection) throws SQLException {

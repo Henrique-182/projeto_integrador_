@@ -1,16 +1,16 @@
 package vacinacao;
 import java.sql.SQLException;
 
-import painel.TelefoneCentroPainel;
+import painel.EnderecoPainel;
 
 public class Teste {
 
 	public static void main(String[] args) throws SQLException {
 		
-		String[][] telefones = TelefoneCentroPainel.novo();
+		String[] endereco = EnderecoPainel.novo();
 		
-		for(String[] telefone : telefones) {
-			System.out.println("(" + telefone[0] + ")" + telefone[1]);
+		for(String x : endereco) {
+			System.out.println(x);
 		}
 	}
 

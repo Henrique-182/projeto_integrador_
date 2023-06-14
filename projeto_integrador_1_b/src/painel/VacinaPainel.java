@@ -44,7 +44,11 @@ public class VacinaPainel {
 			vacina[1] = fabricante;
 			vacina[2] = combate;
 			vacina[3] = dosesMinimas;
-			vacina[4] = diasProximaDose;
+			if(diasProximaDose == null) {
+				vacina[4] = "0";
+			} else {
+				vacina[4] = diasProximaDose;
+			}
 		}
 
 		return vacina;

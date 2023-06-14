@@ -147,11 +147,11 @@ public class Table {
 	private static void createPessoa(Connection connection) throws SQLException {
 		Statement statement = connection.createStatement();
 
-		String queryTablePessoa = "CREATE TABLE IF NOT EXISTS `pessoa` (" + " `id_pessoa` int NOT NULL AUTO_INCREMENT,"
+		String queryTablePessoa = "CREATE TABLE IF NOT EXISTS `pessoa` (" + " `id_pessoa` int NOT NULL PRIMARY KEY AUTO_INCREMENT,"
 				+ "	`cpf` varchar(11) DEFAULT NULL," + "	`nome` varchar(50) NOT NULL,"
 				+ "	`sobrenome` varchar(100) NOT NULL," + "	`fk_id_endereco_pessoa` int NOT NULL,"
 				+ "	`telefone` varchar(14) NOT NULL," + "	`data_nascimento` date NOT NULL,"
-				+ " PRIMARY KEY (`id_pessoa`)," + "	UNIQUE KEY `cpf` (`cpf`)" + "	)";
+				+ "	UNIQUE KEY `cpf` (`cpf`)" + "	)";
 
 		String queryAddConstraintTablePessoa = "ALTER TABLE `pessoa` ADD CONSTRAINT fk_endereco_pessoa"
 				+ " FOREIGN KEY (`fk_id_endereco_pessoa`)" + " REFERENCES `endereco_pessoa` (`id_endereco_pessoa`)";

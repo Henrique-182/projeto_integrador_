@@ -24,7 +24,6 @@ public class Vacinacao {
 					3
 					);
 			
-			
 			switch(menuPrincipal) {
 			case "0":
 				JOptionPane.showMessageDialog(null, "SAINDO");
@@ -37,6 +36,7 @@ public class Vacinacao {
 				Cadastro.cadastrar();
 				break;
 			case "3":
+				Agenda.agendar();
 				break;
 			default:
 				JOptionPane.showMessageDialog(null, "MENU INVÁLIDO", "Inválido", 0);

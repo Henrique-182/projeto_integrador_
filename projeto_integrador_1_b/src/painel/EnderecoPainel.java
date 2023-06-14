@@ -8,6 +8,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import API.Endereco;
+import API.ServicoApiCep;
+
 public class EnderecoPainel {
 
 	private final static String[] ESTADOS = { "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB",
@@ -15,11 +18,13 @@ public class EnderecoPainel {
 
 
 	public static String[] novo() {
-		String[] endereco = {"", "", "", "", "", ""};
+		String[] endereco = new String[6];
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(6, 2));
 
+		panel.add(new JLabel("CEP:"));
+		panel.add(new JTextField());
 		panel.add(new JLabel("Estado:"));
 		JComboBox<String> estadoComboBox = new JComboBox<>(ESTADOS);
 		panel.add(estadoComboBox);
@@ -27,34 +32,49 @@ public class EnderecoPainel {
 		panel.add(new JTextField());
 		panel.add(new JLabel("Bairro:"));
 		panel.add(new JTextField());
-		panel.add(new JLabel("CEP:"));
-		panel.add(new JTextField());
 		panel.add(new JLabel("Logradouro:"));
 		panel.add(new JTextField());
 		panel.add(new JLabel("Complemento:"));
 		panel.add(new JTextField());
+		
+		
+		
+		panel.getComponent(1).addFocusListener(new java.awt.event.FocusAdapter() {
+			public void focusLost(java.awt.event.FocusEvent e){
+
+				String cep = ((JTextField) panel.getComponent(1)).getText();
+			
+			try {
+				Endereco endereco = ServicoApiCep.buscaEnderecoPelo(cep);
+				
+				estadoComboBox.setSelectedItem(endereco.getUf());
+				((JTextField) panel.getComponent(5)).setText(endereco.getLocalidade());
+				((JTextField) panel.getComponent(7)).setText(endereco.getBairro());
+				((JTextField) panel.getComponent(9)).setText(endereco.getLogradouro());
+				((JTextField) panel.getComponent(11)).setText(endereco.getComplemento());
+				 
+			} catch (Exception e1) {
+				JOptionPane.showMessageDialog(null, "CEP NÃO ENCONTRADO", "Atenção", 2);
+			}
+		
+			}
+		});
+			
 
 		int result = JOptionPane.showConfirmDialog(null, panel, "Preencha os dados", JOptionPane.OK_CANCEL_OPTION);
 
 		if (result == JOptionPane.OK_OPTION) {
-			String estado = (String) estadoComboBox.getSelectedItem();
-			String cidade = ((JTextField) panel.getComponent(3)).getText();
-			String bairro = ((JTextField) panel.getComponent(5)).getText();
-			String cep = ((JTextField) panel.getComponent(7)).getText();
-			String logradouro = ((JTextField) panel.getComponent(9)).getText();
-			String complemento = ((JTextField) panel.getComponent(11)).getText();
-
-			endereco[0] = estado;
-			endereco[1] = cidade;
-			endereco[2] = bairro;
-			endereco[3] = cep;
-			endereco[4] = logradouro;
-			endereco[5] = complemento;
+			endereco[0] = (String) estadoComboBox.getSelectedItem();
+			endereco[1] = ((JTextField) panel.getComponent(5)).getText();
+			endereco[2] = ((JTextField) panel.getComponent(7)).getText();
+			endereco[3] = ((JTextField) panel.getComponent(1)).getText();
+			endereco[4] = ((JTextField) panel.getComponent(9)).getText();
+			endereco[5] = ((JTextField) panel.getComponent(11)).getText();
 		}
 		
 		return endereco;
 	}
-
+	
 	public static String getEstado() {
 		String estado = "";
 		
