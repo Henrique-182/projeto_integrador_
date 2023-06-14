@@ -7,13 +7,13 @@ import java.sql.SQLException;
 public class Conexao {
 	
 	public static void main(String[] args) throws SQLException {
-		/*Table.createTables();*/
+		Table.createTables();
 		Table.populateTables();
 	}
 
 	public static Connection createConnection() {
 		Connection conexao = null;
-		String url = "jdbc:mysql://localhost:3306/pi1b?verifyServerCertificate=false&useSSL=true";
+		String url = "jdbc:mysql://localhost:3306/projeto_integrador_1_b?verifyServerCertificate=false&useSSL=true";
 		String user = "root";
 		String password = "12345678";
 

@@ -23,10 +23,10 @@ public class Table {
 	public static void populateTables() throws SQLException {
 		Connection connection = Conexao.createConnection();
 
-		/*populateEnderecoPessoa(connection);
+		populateEnderecoPessoa(connection);
 		populatePessoa(connection);
 		populateEnderecoCentro(connection);
-		populateCentro(connection);*/
+		populateCentro(connection);
 		populateTelefoneCentro(connection);
 		populateVacina(connection);
 		populateVacinacao(connection);
@@ -323,7 +323,7 @@ public class Table {
 
 		String queryPopulate = "";
 		
-		statement.execute(queryPopulate);
+		/*statement.execute(queryPopulate);*/
 
 		System.out.println("TABELA VACINAÇÃO POPULADA");
 

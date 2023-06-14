@@ -135,20 +135,28 @@ public class CentroCRUD {
 		statement.close();
 	}
 
-	public static void insert(Connection connection, Integer idEndereco) throws SQLException {
+	public static Integer insert(Connection connection, Integer idEndereco) throws SQLException {
 		String[] centro = CentroPainel.novo();
 		String nome = centro[0];
 		String tipo = centro[1];
 
-		String query = "INSERT INTO" + " centro(nome, tipo, fk_id_endereco_centro)" + " VALUES(?, ?, ?)";
+		String query = "INSERT INTO" 
+				+ " centro(nome, tipo, fk_id_endereco_centro)" 
+				+ " VALUES(?, ?, ?)";
 
-		PreparedStatement statement = connection.prepareStatement(query);
+		PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 		statement.setString(1, nome);
 		statement.setString(2, tipo);
 		statement.setInt(3, idEndereco);
 
 		statement.executeUpdate();
-
+		
+		ResultSet resultSet = statement.getGeneratedKeys();
+		resultSet.next();
+		Integer id = resultSet.getInt(1);
+		
 		statement.close();
+		
+		return id;
 	}
 }

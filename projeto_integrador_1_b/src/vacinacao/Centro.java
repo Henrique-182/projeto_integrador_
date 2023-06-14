@@ -81,9 +81,9 @@ public class Centro {
 			
 			Integer idEndereco = EnderecoCentroCRUD.createEGetIdEndereco(connection);
 			
-			TelefoneCentroCRUD.createTelefones(connection);
-			
-			CentroCRUD.insert(connection, idEndereco);
+			Integer idCentro = CentroCRUD.insert(connection, idEndereco);
+
+			TelefoneCentroCRUD.createTelefones(connection, idCentro);
 			
 			JOptionPane.showMessageDialog(null, "CENTRO CRIADO COM SUCESSO", "Sucesso", 1);
 		} catch (Exception e) {
