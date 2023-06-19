@@ -71,6 +71,65 @@ public class VacinaCRUD {
 		}
 		statement.close();
 	}
+	
+	public static void selectPorDoenca(Connection connection) throws SQLException {
+		String doenca = VacinaPainel.getDoenca();
+		
+		Statement statement = connection.createStatement();
+		
+		Integer i = 0;
+		while(true) {
+			if(i == 0) {				
+				String querySetIdMaximo = "set @idMaximo = 0" ;
+				statement.execute(querySetIdMaximo);
+				
+				i++;
+				
+			} else {
+				String query = "SELECT id_vacina, nome, fabricante, combate, doses_minimas, dias_proxima_dose FROM vacina WHERE (id_vacina > @idMaximo) and (combate = '" + doenca + "') LIMIT 3";
+				
+				ResultSet resultSet = statement.executeQuery(query);
+				
+				boolean retornouRegistros = false;
+				
+				StringBuilder sb = new StringBuilder();
+				while(resultSet.next()) {
+					retornouRegistros = true;
+					
+					Integer id = resultSet.getInt("id_vacina");
+					String nome = resultSet.getString("nome");
+					String fabricante = resultSet.getString("fabricante");
+					String combate = resultSet.getString("combate");
+					String dosesMinimas = resultSet.getString("doses_minimas");
+					String diasProximaDose = resultSet.getString("dias_proxima_dose");
+					String separador = "=-=-=-=-=-=-=-=-=-=-=- id: " + id + " -=-=-=-=-=-=-=-=-=-=-=-=\n";
+					
+					String s = "Nome: " + nome + "\n"
+							+ "Fabricante: " + fabricante + "\n"
+							+ "Combate: " + combate + "\n"
+							+ "Doses mínimas: " + dosesMinimas + "\n"
+							+ "Dias próxima dose: " + diasProximaDose + "\n";
+					
+					sb.append(separador);
+					sb.append(s);
+				}
+				
+				if(!retornouRegistros) {
+					break;
+				}
+				
+				JOptionPane.showMessageDialog(null, sb, "Todas as pessoas: " + i +"ª página", 1);
+				i++;
+					
+				resultSet.close();
+				
+				String querySetIdMaximo = "SET @idMaximo = (SELECT MAX(id_vacina) as id_maximo FROM (SELECT id_vacina FROM vacina WHERE (id_vacina > @idMaximo) and (combate = '" + doenca + "') LIMIT 3) as subquery);";
+
+				statement.execute(querySetIdMaximo);
+			}
+		}
+		statement.close();
+	}
 
 	public static void insert(Connection connection) throws SQLException {
 		String[] vacina = VacinaPainel.novo();

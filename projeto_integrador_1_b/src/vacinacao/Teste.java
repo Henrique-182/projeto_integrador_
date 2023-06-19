@@ -1,17 +1,16 @@
 package vacinacao;
+
+import java.sql.Connection;
 import java.sql.SQLException;
 
-import painel.EnderecoPainel;
+import conexao.Conexao;
+import tabelas.VacinacaoCRUD;
 
 public class Teste {
 
 	public static void main(String[] args) throws SQLException {
-		
-		String[] endereco = EnderecoPainel.novo();
-		
-		for(String x : endereco) {
-			System.out.println(x);
-		}
+		Connection connection = Conexao.createConnection();
+		VacinacaoCRUD.insert(connection);
 	}
 
 }

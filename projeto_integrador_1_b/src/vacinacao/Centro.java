@@ -33,10 +33,10 @@ public class Centro {
 				continuaMenuConsultaCentro = false;
 				break;
 			case "1":
-				consultarPaginado();
+				consultaPaginado();
 				break;
 			case "2":
-				consultarPorEstado();
+				consultaPorEstado();
 				break;
 			default:
 				JOptionPane.showMessageDialog(null, "OPÇÃO DE CONSULTA POR CENTRO INVÁLIDA");
@@ -45,7 +45,7 @@ public class Centro {
 	}
 
 
-	private static void consultarPaginado() throws SQLException {
+	private static void consultaPaginado() throws SQLException {
 		try {
 			connection = Conexao.createConnection();
 			
@@ -60,7 +60,7 @@ public class Centro {
 		}
 	}
 	
-	private static void consultarPorEstado() throws SQLException {
+	public static void consultaPorEstado() throws SQLException {
 		try {
 			connection = Conexao.createConnection();
 			
@@ -68,7 +68,6 @@ public class Centro {
 			
 			JOptionPane.showMessageDialog(null, "NÃO HÁ MAIS NENHUM REGISTRO DE CENTRO", "Todos os Centros", 2);
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
 			JOptionPane.showMessageDialog(null, "ERRO AO CONSULTAR CENTROS", "Erro", 0);
 		} finally {
 			connection.close();

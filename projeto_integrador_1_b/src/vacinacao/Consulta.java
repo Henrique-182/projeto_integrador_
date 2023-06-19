@@ -32,7 +32,7 @@ public class Consulta {
 				Centro.consultasDisponiveis();
 				break;
 			case "3":
-				Vacina.consultarPaginado();
+				Vacina.consultasDisponiveis();
 				break;
 			default:
 				JOptionPane.showMessageDialog(null, "MENU INVÁLIDO", "Inválido", 0);

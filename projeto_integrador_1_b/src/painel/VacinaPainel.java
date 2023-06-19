@@ -13,7 +13,7 @@ public class VacinaPainel {
 	private static final String[] COMBATE = {"COVID-19"};
 	
 	public static String[] novo() {
-		String[] vacina = {"", "", "", "", ""};
+		String[] vacina = new String[5];
 
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(6, 2));
@@ -52,5 +52,25 @@ public class VacinaPainel {
 		}
 
 		return vacina;
+	}
+
+	public static String getDoenca() {
+		String doenca = "";
+
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridLayout(6, 2));
+
+		
+		panel.add(new JLabel("Combate:"));
+		JComboBox<String> dddComboBox = new JComboBox<>(COMBATE);
+		panel.add(dddComboBox);
+
+		int result = JOptionPane.showConfirmDialog(null, panel, "Preencha os dados", JOptionPane.OK_CANCEL_OPTION);
+
+		if (result == JOptionPane.OK_OPTION) {
+			doenca = (String) dddComboBox.getSelectedItem();
+		}
+
+		return doenca;
 	}
 }
