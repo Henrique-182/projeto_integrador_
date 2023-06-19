@@ -11,7 +11,7 @@ public class Conexao {
 		Table.populateTables();
 	}
 
-	public static Connection createConnection() {
+	public static Connection createConnection() throws SQLException {
 		Connection conexao = null;
 		String url = "jdbc:mysql://localhost:3306/projeto_integrador_1_b?verifyServerCertificate=false&useSSL=true";
 		String user = "root";

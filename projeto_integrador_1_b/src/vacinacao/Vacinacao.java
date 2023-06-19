@@ -19,6 +19,7 @@ public class Vacinacao {
 			String menuVacinar = JOptionPane.showInputDialog(null, 
 					"0- Voltar ao Menu Principal\n"
 					+ "1- Consultar Agendamentos\n"
+					+ "2- Consultar Vacinação\n"
 					+ "2- Consultar Esquema Vacinal\n"
 					+ "3- Agendar Vacinação \n\n"
 					+ "Escolha:", 
@@ -34,9 +35,11 @@ public class Vacinacao {
 				agendamentos();
 				break;
 			case "2":
-				esquemaVacinal();
+				realizadas();
 				break;
 			case "3":
+				break;
+			case "4":
 				agendar();
 				break;
 			default:
@@ -61,9 +64,19 @@ public class Vacinacao {
 		}
 	}
 
-	private static void esquemaVacinal() {
-		// TODO Auto-generated method stub
-		
+	private static void realizadas() throws SQLException  {
+		try {
+			connection = Conexao.createConnection();
+			
+			VacinacaoCRUD.selectVacinados(connection);
+			
+			JOptionPane.showMessageDialog(null, "NÃO HÁ MAIS NENHUM REGISTRO DE VACINAÇÃO", "Todas as Vacinações", 2);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			JOptionPane.showMessageDialog(null, "ERRO AO CONSULTAR VACINAÇÃO", "Erro", 0);
+		} finally {
+			connection.close();
+		}
 	}
 
 	private static void agendar() throws SQLException {

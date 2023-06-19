@@ -60,7 +60,7 @@ public class VacinacaoCRUD {
 					break;
 				}
 				
-				JOptionPane.showMessageDialog(null, sb, "Todas as pessoas: " + i +"ª página", 1);
+				JOptionPane.showMessageDialog(null, sb, "Todas os Agendamentos: " + i +"ª página", 1);
 				i++;
 					
 				resultSet.close();
@@ -68,9 +68,6 @@ public class VacinacaoCRUD {
 				String querySetIdMaximo = "SET @idMaximo = ("
 						+ " SELECT MAX(id_vacinacao) AS id_maximo FROM ("
 						+ " SELECT id_vacinacao FROM VACINACAO vacinacao"
-						+ " INNER JOIN vacina v ON v.id_vacina = vacinacao.fk_id_vacina"
-						+ " INNER JOIN pessoa p ON p.id_pessoa = vacinacao.fk_id_pessoa"
-						+ " INNER JOIN centro c ON c.id_centro = vacinacao.fk_id_centro"
 						+ " WHERE (vacinacao.dia_vacinacao > curdate()) AND (vacinacao.id_vacinacao > @idMaximo) LIMIT 5) AS subquery)";
 
 				
@@ -79,6 +76,72 @@ public class VacinacaoCRUD {
 		}
 		statement.close();
 	}
+
+	public static void selectVacinados(Connection connection) throws SQLException {
+		Statement statement = connection.createStatement();
+		
+		Integer i = 0;
+		while(true) {
+			if(i == 0) {				
+				String querySetIdMaximo = "set @idMaximo = 0" ;
+				statement.execute(querySetIdMaximo);
+				
+				i++;
+				
+			} else {
+				String query = "SELECT vac.id_vacinacao AS idVacinacao, vac.dia_vacinacao AS diaVacinacao, p.nome AS nomePessoa, p.sobrenome as sobrenomePessoa, v.nome AS nomeVacina, c.nome AS nomeCentro FROM VACINACAO vac"
+						+ " INNER JOIN pessoa p ON p.id_pessoa = vac.fk_id_pessoa"
+						+ " INNER JOIN vacina v ON v.id_vacina = vac.fk_id_vacina"
+						+ " INNER JOIN centro c ON c.id_centro = vac.fk_id_centro"
+						+ "	WHERE (dia_vacinacao <= curdate()) AND (id_vacinacao > @idMaximo)"
+						+ "	LIMIT 5;";
+				
+				ResultSet resultSet = statement.executeQuery(query);
+				
+				boolean retornouRegistros = false;
+				
+				StringBuilder sb = new StringBuilder();
+				while(resultSet.next()) {
+					retornouRegistros = true;
+					
+					Integer idVacinacao = resultSet.getInt("idVacinacao");
+					String nomePessoa = resultSet.getString("nomePessoa");
+					String sobrenomePessoa = resultSet.getString("sobrenomePessoa");
+					String nomeVacina = resultSet.getString("nomeVacina");
+					String nomeCentro = resultSet.getString("nomeCentro");
+					String diaVacinacao = resultSet.getString("diaVacinacao");
+					String separador = "=-=-=-=-=-=-=-=-=-=-=- id: " + idVacinacao + " -=-=-=-=-=-=-=-=-=-=-=-=\n";
+					
+					String s = nomePessoa + " " + sobrenomePessoa + "\n"
+							+ nomeVacina + "\n"
+							+ nomeCentro + "\n"
+							+ diaVacinacao + "\n";
+					
+					sb.append(separador);
+					sb.append(s);
+				}
+				
+				if(!retornouRegistros) {
+					break;
+				}
+				
+				JOptionPane.showMessageDialog(null, sb, "Todas as Vacinações realizadas: " + i +"ª página", 1);
+				i++;
+					
+				resultSet.close();
+				
+				String querySetIdMaximo = "SET @idMaximo = ("
+						+ " SELECT MAX(id_vacinacao) AS id_maximo FROM ("
+						+ " SELECT vac.id_vacinacao FROM VACINACAO vac"
+						+ " WHERE (vac.dia_vacinacao <= curdate()) AND (vac.id_vacinacao > @idMaximo) LIMIT 5) AS subquery)";
+
+				
+				statement.execute(querySetIdMaximo);
+			}
+		}
+		statement.close();
+	}
+
 
 	public static void insert(Connection connection) throws SQLException {
 		String[] dados = VacinacaoPainel.novo();

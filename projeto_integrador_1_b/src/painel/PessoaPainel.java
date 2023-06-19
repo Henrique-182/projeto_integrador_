@@ -12,6 +12,8 @@ import javax.swing.JTextField;
 
 import com.toedter.calendar.JDateChooser;
 
+import validacao.ValidaCPF;
+
 public class PessoaPainel {
 
 	private static final String[] DDD = { "011", "021", "027", "031", "041", "047", "051", "061", "062", "063", "065",
@@ -39,6 +41,32 @@ public class PessoaPainel {
 		JDateChooser dateChooser = new JDateChooser();
 		panel.add(dateChooser);
 
+		
+		panel.getComponent(1).addFocusListener(new java.awt.event.FocusAdapter() {
+			public void focusLost(java.awt.event.FocusEvent e){
+
+				ValidaCPF validacpf = new ValidaCPF();
+			boolean valida;
+				
+				String cpf = ((JTextField) panel.getComponent(1)).getText();
+				
+				valida = validacpf.isCPF(cpf);
+				
+				if(cpf.isEmpty()) {
+					
+				}else {
+					if (!valida) {
+						JOptionPane.showMessageDialog(null, "CPF Invalido", "Atenção", 2);
+						((JTextField) panel.getComponent(1)).grabFocus();
+					}
+				
+				}
+				
+			
+	
+			}
+		});
+		
 		int result = JOptionPane.showConfirmDialog(null, panel, "Preencha os dados", JOptionPane.OK_CANCEL_OPTION);
 
 		if (result == JOptionPane.OK_OPTION) {
@@ -48,18 +76,20 @@ public class PessoaPainel {
 			String ddd = (String) dddComboBox.getSelectedItem();
 			String numero = ((JTextField) panel.getComponent(9)).getText();
 			Date dataNascimento = ((JDateChooser) panel.getComponent(11)).getDate();
-
+			
 			pessoa[0] = cpf;
 			pessoa[1] = nome;
 			pessoa[2] = sobrenome;
 			pessoa[3] = "55" + ddd + numero;
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			pessoa[4] = simpleDateFormat.format(dataNascimento);
+	
 		}
 
 		return pessoa;
 	}
-
+	
+	
 	public static String getCPF() {
 		String cpf = "";
 
