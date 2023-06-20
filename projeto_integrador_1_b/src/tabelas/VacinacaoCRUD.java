@@ -142,7 +142,73 @@ public class VacinacaoCRUD {
 		statement.close();
 	}
 
+	public static void selectTopVacinas(Connection connection) throws SQLException {
+		Statement statement = connection.createStatement();
+		
+		String query = "SELECT v.nome AS nomeVacina, COUNT(DISTINCT CONCAT(vac.fk_id_pessoa, '_', vac.fk_id_vacina)) AS totalAplicacoes FROM vacina v"
+				+ " LEFT JOIN vacinacao vac ON v.id_vacina = vac.fk_id_vacina"
+				+ " GROUP BY v.id_vacina"
+				+ " ORDER BY COUNT(DISTINCT CONCAT(vac.fk_id_pessoa, '_', vac.fk_id_vacina)) DESC LIMIT 10";
+		
+		ResultSet resultSet = statement.executeQuery(query);
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append("Nome -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= Aplicações\n");
+		
+		while(resultSet.next()) {
+			String nomeVacina = resultSet.getString("nomeVacina");
+			Integer totalAplicacoes = resultSet.getInt("totalAplicacoes");
+			
+			int tamanho = nomeVacina.length();
+			int qnt = 40;
+			if(tamanho % 2 == 0) {
+				qnt -= tamanho;
+			} else {
+				qnt -= tamanho;
+		}
+			
+			
+		String s = String.format("%-40s %d aplicações\n", nomeVacina, totalAplicacoes);
+		
+		sb.append(s);
+		}
+		
+		JOptionPane.showMessageDialog(null, sb, "Vacinas mais aplicadas:", 1);
+			
+		resultSet.close();
+		statement.close();
+	}
 
+	public static void selectVacinacaoPorEstado(Connection connection) throws SQLException {
+		Statement statement = connection.createStatement();
+		
+		String query = "SELECT e.estado AS estado, count(DISTINCT v.fk_id_pessoa) AS totalAplicacoes FROM endereco_pessoa e"
+				+ " INNER JOIN pessoa p ON p.fk_id_endereco_pessoa = e.id_endereco_pessoa"
+				+ " LEFT JOIN vacinacao v ON v.fk_id_pessoa = p.id_pessoa"
+				+ " GROUP BY e.estado"
+				+ " ORDER BY 2 DESC";
+		
+		ResultSet resultSet = statement.executeQuery(query);
+		
+		StringBuilder sb = new StringBuilder();
+		
+		while(resultSet.next()) {
+			String estado = resultSet.getString("estado");
+			Integer totalAplicacoes = resultSet.getInt("totalAplicacoes");
+			
+		String s = estado + ".................................................." + totalAplicacoes + " Aplicações\n";
+		
+		sb.append(s);
+		}
+		
+		JOptionPane.showMessageDialog(null, sb, "Estados com mais aplicações:", 1);
+			
+		resultSet.close();
+		statement.close();
+	}
+
+
+	
 	public static void insert(Connection connection) throws SQLException {
 		String[] dados = VacinacaoPainel.novo();
 		Integer idVacina = Integer.parseInt(dados[0]);

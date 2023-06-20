@@ -20,8 +20,8 @@ public class Vacinacao {
 					"0- Voltar ao Menu Principal\n"
 					+ "1- Consultar Agendamentos\n"
 					+ "2- Consultar Vacinação\n"
-					+ "2- Consultar Esquema Vacinal\n"
-					+ "3- Agendar Vacinação \n\n"
+					+ "3- Consultar Esquema Vacinal\n"
+					+ "4- Agendar Vacinação \n\n"
 					+ "Escolha:", 
 					"Menu Vacinação", 
 					1
@@ -38,6 +38,7 @@ public class Vacinacao {
 				realizadas();
 				break;
 			case "3":
+				esquemaVacinal();
 				break;
 			case "4":
 				agendar();
@@ -79,6 +80,22 @@ public class Vacinacao {
 		}
 	}
 
+	private static void esquemaVacinal() throws SQLException  {
+		try {
+			connection = Conexao.createConnection();
+			
+			VacinacaoCRUD.selectTopVacinas(connection);
+			VacinacaoCRUD.selectVacinacaoPorEstado(connection);
+			
+			JOptionPane.showMessageDialog(null, "NÃO HÁ MAIS NENHUM REGISTRO DE ESQUEMA VACINAL", "Esquema Vacinal", 2);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			JOptionPane.showMessageDialog(null, "ERRO AO CONSULTAR ESQUEMA VACINAL", "Erro", 0);
+		} finally {
+			connection.close();
+		}
+	}
+	
 	private static void agendar() throws SQLException {
 		try {
 			connection = Conexao.createConnection();
