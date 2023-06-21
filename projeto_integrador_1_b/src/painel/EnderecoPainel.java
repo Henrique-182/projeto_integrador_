@@ -43,10 +43,14 @@ public class EnderecoPainel {
 			public void focusLost(java.awt.event.FocusEvent e){
 
 				String cep = ((JTextField) panel.getComponent(1)).getText();
-			
+				
 			try {
 				Endereco endereco = ServicoApiCep.buscaEnderecoPelo(cep);
 				
+				if(endereco.getLocalidade() == null) {
+					throw new Exception();
+					
+				}
 				estadoComboBox.setSelectedItem(endereco.getUf());
 				((JTextField) panel.getComponent(5)).setText(endereco.getLocalidade());
 				((JTextField) panel.getComponent(7)).setText(endereco.getBairro());
@@ -55,6 +59,12 @@ public class EnderecoPainel {
 				 
 			} catch (Exception e1) {
 				JOptionPane.showMessageDialog(null, "CEP NÃO ENCONTRADO", "Atenção", 2);
+				((JTextField) panel.getComponent(1)).grabFocus();
+				((JTextField) panel.getComponent(5)).setText(null);
+				((JTextField) panel.getComponent(7)).setText(null);
+				((JTextField) panel.getComponent(9)).setText(null);
+				((JTextField) panel.getComponent(11)).setText(null);
+				 
 			}
 		
 			}

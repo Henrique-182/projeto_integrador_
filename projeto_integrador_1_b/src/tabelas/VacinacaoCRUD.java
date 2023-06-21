@@ -153,24 +153,21 @@ public class VacinacaoCRUD {
 		ResultSet resultSet = statement.executeQuery(query);
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append("Nome -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= Aplicações\n");
 		
 		while(resultSet.next()) {
 			String nomeVacina = resultSet.getString("nomeVacina");
 			Integer totalAplicacoes = resultSet.getInt("totalAplicacoes");
 			
 			int tamanho = nomeVacina.length();
-			int qnt = 40;
-			if(tamanho % 2 == 0) {
-				qnt -= tamanho;
-			} else {
-				qnt -= tamanho;
-		}
 			
-			
-		String s = String.format("%-40s %d aplicações\n", nomeVacina, totalAplicacoes);
+			for (int i = 0; i < 60 - tamanho; i++) {
+				nomeVacina+= ".";
+			}
 		
-		sb.append(s);
+			System.out.println(nomeVacina.length());
+			String  s = nomeVacina + " " + totalAplicacoes + " aplicações\n";
+		
+			sb.append(s);
 		}
 		
 		JOptionPane.showMessageDialog(null, sb, "Vacinas mais aplicadas:", 1);

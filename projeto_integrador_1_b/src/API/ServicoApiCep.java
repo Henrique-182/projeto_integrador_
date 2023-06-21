@@ -8,12 +8,10 @@ import java.net.URL;
 import com.google.gson.Gson;
 
 
-
 public class ServicoApiCep {
+	
     static String webService = "http://viacep.com.br/ws/";
     static int codigoSucesso = 200;
-    
- 
 
     public static Endereco buscaEnderecoPelo(String cep) throws Exception {
         String urlParaChamada = webService + cep + "/json";
@@ -31,8 +29,6 @@ public class ServicoApiCep {
             Gson gson = new Gson();
             Endereco endereco = gson.fromJson(jsonEmString, Endereco.class);
             
-   
-
             return endereco;
           
         } catch (Exception e) {

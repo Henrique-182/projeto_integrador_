@@ -44,26 +44,14 @@ public class PessoaPainel {
 		
 		panel.getComponent(1).addFocusListener(new java.awt.event.FocusAdapter() {
 			public void focusLost(java.awt.event.FocusEvent e){
-
-				ValidaCPF validacpf = new ValidaCPF();
-			boolean valida;
 				
 				String cpf = ((JTextField) panel.getComponent(1)).getText();
 				
-				valida = validacpf.isCPF(cpf);
-				
-				if(cpf.isEmpty()) {
-					
-				}else {
-					if (!valida) {
-						JOptionPane.showMessageDialog(null, "CPF Invalido", "Atenção", 2);
-						((JTextField) panel.getComponent(1)).grabFocus();
-					}
-				
+				if (!ValidaCPF.isCPF(cpf)) {
+					JOptionPane.showMessageDialog(null, "CPF Invalido", "Atenção", 2);
+					((JTextField) panel.getComponent(1)).grabFocus();
 				}
 				
-			
-	
 			}
 		});
 		
