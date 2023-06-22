@@ -32,7 +32,7 @@ public class ServicoApiCep {
             return endereco;
           
         } catch (Exception e) {
-            throw new Exception("ERRO: " + e);
+            throw new Exception("ERRO: ");
         }
 	
     }

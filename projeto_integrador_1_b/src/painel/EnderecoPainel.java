@@ -42,14 +42,14 @@ public class EnderecoPainel {
 		panel.getComponent(1).addFocusListener(new java.awt.event.FocusAdapter() {
 			public void focusLost(java.awt.event.FocusEvent e){
 
-				String cep = ((JTextField) panel.getComponent(1)).getText();
-				
+			String cep = ((JTextField) panel.getComponent(1)).getText();
+			
 			try {
 				Endereco endereco = ServicoApiCep.buscaEnderecoPelo(cep);
 				
-				if(endereco.getLocalidade() == null) {
-					throw new Exception();
-					
+			
+				if (endereco.getLocalidade() == null) {
+					throw new Exception(); 
 				}
 				estadoComboBox.setSelectedItem(endereco.getUf());
 				((JTextField) panel.getComponent(5)).setText(endereco.getLocalidade());

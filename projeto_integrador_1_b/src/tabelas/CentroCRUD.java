@@ -20,19 +20,14 @@ public class CentroCRUD {
 		while (true) {
 			if (i == 0) {
 				i++;
-				String querySetIdMinimo = "set @idMinimo = 0";
 				String querySetIdMaximo = "set @idMaximo = 0";
 
-				statement.execute(querySetIdMinimo);
 				statement.execute(querySetIdMaximo);
 
 			} else {
-				String querySetIdMinimo = "set @idMinimo = (SELECT MIN(id_centro) FROM centro where id_centro > @idMaximo LIMIT 8)";
-				String querySetIdMaximo = "set @idMaximo = (SELECT MAX(id_centro) as id_maximo FROM (SELECT id_centro FROM centro where id_centro > @idMaximo LIMIT 8) as subquery)";
-				String query = "select * from centro where id_centro between @idMinimo and @idMaximo;";
+				String query = "select * from centro WHERE id_centro > @idMaximo LIMIT 8";
 
-				statement.execute(querySetIdMinimo);
-				statement.execute(querySetIdMaximo);
+				
 
 				ResultSet resultSet = statement.executeQuery(query);
 
@@ -53,6 +48,8 @@ public class CentroCRUD {
 					sb.append(separador);
 					sb.append(s);
 				}
+				
+				resultSet.close();
 
 				if (!retornouRegistros) {
 					break;
@@ -61,7 +58,8 @@ public class CentroCRUD {
 				JOptionPane.showMessageDialog(null, sb, "Todas os centros: " + i + "ª página", 1);
 				i++;
 
-				resultSet.close();
+				String querySetIdMaximo = "set @idMaximo = (SELECT MAX(id_centro) as id_maximo FROM (SELECT id_centro FROM centro where id_centro > @idMaximo LIMIT 8) as subquery)";
+				statement.execute(querySetIdMaximo);
 			}
 		}
 		statement.close();

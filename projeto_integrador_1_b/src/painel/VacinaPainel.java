@@ -58,7 +58,7 @@ public class VacinaPainel {
 		String doenca = "";
 
 		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(6, 2));
+		panel.setLayout(new GridLayout(3, 2));
 
 		
 		panel.add(new JLabel("Combate:"));

@@ -9,6 +9,7 @@ public class Endereco {
     String complemento;
     String uf;
     boolean erro;
+    
 
     public String getLogradouro() {
         return logradouro;

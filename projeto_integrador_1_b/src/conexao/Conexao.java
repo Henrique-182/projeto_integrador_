@@ -7,8 +7,9 @@ import java.sql.SQLException;
 public class Conexao {
 	
 	public static void main(String[] args) throws SQLException {
-		Table.createTables();
-		Table.populateTables();
+		DB.createTables();
+		DB.populateTables();
+		DB.createProcedure();
 	}
 
 	public static Connection createConnection() throws SQLException {

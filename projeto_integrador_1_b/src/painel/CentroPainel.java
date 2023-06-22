@@ -13,7 +13,7 @@ public class CentroPainel {
 	private static final String[] TIPO = {"PRIVADO", "PUBLICO"};
 
 	public static String[] novo() {
-		String[] centro = { "", "", "", "" };
+		String[] centro = new String[4];
 
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(6, 2));
