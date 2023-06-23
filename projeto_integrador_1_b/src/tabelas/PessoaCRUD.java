@@ -25,7 +25,7 @@ public class PessoaCRUD {
 				i++;
 				
 			} else {
-				String query = "SELECT id_pessoa, cpf, nome, sobrenome FROM pessoa where id_pessoa > @idMaximo LIMIT 8";
+				String query = "SELECT id_pessoa, cpf, nome, sobrenome, telefone FROM pessoa where id_pessoa > @idMaximo LIMIT 8";
 				
 				ResultSet resultSet = statement.executeQuery(query);
 				
@@ -39,11 +39,12 @@ public class PessoaCRUD {
 					String cpf = resultSet.getString("cpf");
 					String nome = resultSet.getString("nome");
 					String sobrenome = resultSet.getString("sobrenome");
+					String telefone = resultSet.getString("telefone");
 					String separador = "=-=-=-=-=-=-=-=-=-=-=- id: " + id + " -=-=-=-=-=-=-=-=-=-=-=-=\n";
 					
 					String s = "CPF: " + cpf + "\n"
-							+ "Nome: " + nome + " " + sobrenome + "\n";
-					
+							+ "Nome: " + nome + " " + sobrenome + "\n"
+							+ "Telefone: " + telefone + "\n";
 					sb.append(separador);
 					sb.append(s);
 				}

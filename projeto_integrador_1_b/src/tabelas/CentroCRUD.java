@@ -25,9 +25,7 @@ public class CentroCRUD {
 				statement.execute(querySetIdMaximo);
 
 			} else {
-				String query = "select * from centro WHERE id_centro > @idMaximo LIMIT 8";
-
-				
+				String query = "select * from centro WHERE id_centro > @idMaximo LIMIT 6";
 
 				ResultSet resultSet = statement.executeQuery(query);
 
@@ -40,17 +38,19 @@ public class CentroCRUD {
 					Integer id = resultSet.getInt("id_centro");
 					String nome = resultSet.getString("nome");
 					String tipo = resultSet.getString("tipo");
+					StringBuilder telefones = TelefoneCentroCRUD.selectTelefone(connection, id);
 					String separador = "=-=-=-=-=-=-=-=-=-=-=- id: " + id + " -=-=-=-=-=-=-=-=-=-=-=-=\n";
-
-					String s = "Nome: " + nome + "\n"
-							+ "Tipo: " + tipo + "\n";
+					
+					String s = nome + "\n"
+							+ tipo + "\n"
+							+ telefones + "\n";
 
 					sb.append(separador);
 					sb.append(s);
 				}
 				
 				resultSet.close();
-
+				
 				if (!retornouRegistros) {
 					break;
 				}
@@ -58,13 +58,15 @@ public class CentroCRUD {
 				JOptionPane.showMessageDialog(null, sb, "Todas os centros: " + i + "ª página", 1);
 				i++;
 
-				String querySetIdMaximo = "set @idMaximo = (SELECT MAX(id_centro) as id_maximo FROM (SELECT id_centro FROM centro where id_centro > @idMaximo LIMIT 8) as subquery)";
+				String querySetIdMaximo = "set @idMaximo = (SELECT MAX(id_centro) as id_maximo FROM (SELECT id_centro FROM centro where id_centro > @idMaximo LIMIT 6) as subquery)";
 				statement.execute(querySetIdMaximo);
 			}
 		}
 		statement.close();
 		connection.close();
 	}
+	
+	
 	
 	public static void selectPorEstado(Connection connection) throws SQLException {
 		Statement statement = connection.createStatement();
@@ -75,21 +77,14 @@ public class CentroCRUD {
 		while(true) {
 			if(i == 0) {
 				i++;
-				String querySetIdMinimo = "set @idMinimo = 0";
 				String querySetIdMaximo = "set @idMaximo = 0" ;
 				
-				statement.execute(querySetIdMinimo);
 				statement.execute(querySetIdMaximo);
 			} else {
-				String querySetIdMinimo = "set @idMinimo = (SELECT MIN(c.id_centro) FROM centro c LEFT JOIN endereco_centro e ON e.id_endereco_centro = c.fk_id_endereco_centro WHERE e.estado = '" + estadoWhere + "' AND c.id_centro > @idMaximo LIMIT 3)";
-				String querySetIdMaximo = "set @idMaximo = (SELECT MAX(id_centro) as id_maximo FROM (SELECT c.id_centro FROM centro c LEFT JOIN endereco_centro e ON e.id_endereco_centro = c.fk_id_endereco_centro WHERE e.estado = '" + estadoWhere + "' AND c.id_centro > @idMaximo LIMIT 3) as subquery)";
 				String query = "SELECT c.id_centro, c.nome, c.tipo, e.estado, e.cidade, e.bairro, e.cep, e.logradouro, e.complemento FROM centro c"
 						+ " LEFT JOIN endereco_centro e ON e.id_endereco_centro = c.fk_id_endereco_centro"
-						+ "	WHERE e.estado = '" + estadoWhere + "' AND "
-						+ " c.id_centro BETWEEN @idMinimo and @idMaximo";
+						+ " WHERE e.estado = '" + estadoWhere + "' AND c.id_centro > @idMaximo LIMIT 3";
 				
-				statement.execute(querySetIdMinimo);
-				statement.execute(querySetIdMaximo);
 				
 				ResultSet resultSet = statement.executeQuery(query);
 				
@@ -120,6 +115,8 @@ public class CentroCRUD {
 					sb.append(s);
 				}
 				
+				resultSet.close();
+				
 				if(!retornouRegistros) {
 					break;
 				}
@@ -127,6 +124,9 @@ public class CentroCRUD {
 				JOptionPane.showMessageDialog(null, sb, "Centros por Estado:" + i + "ª página", 1);
 				i++;
 				
+				
+				String querySetIdMaximo = "set @idMaximo = (SELECT MAX(id_centro) as id_maximo FROM (SELECT c.id_centro FROM centro c LEFT JOIN endereco_centro e ON e.id_endereco_centro = c.fk_id_endereco_centro WHERE e.estado = '" + estadoWhere + "' AND c.id_centro > @idMaximo LIMIT 3) as subquery)";
+				statement.execute(querySetIdMaximo);
 			}
 		} 
 		 
