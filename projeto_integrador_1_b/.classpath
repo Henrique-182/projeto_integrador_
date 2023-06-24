@@ -7,7 +7,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="jcalendar-1.4.jar"/>
-	<classpathentry kind="lib" path="C:/Users/User/Documents/GitHub/projeto_integrador_/projeto_integrador_1_b/mysql-connector-j-8.0.33.jar"/>
-	<classpathentry kind="lib" path="C:/Users/User/Documents/GitHub/projeto_integrador_/projeto_integrador_1_b/gson-2.2.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/henri/OneDrive/Documentos/GitHub/projeto_integrador_/projeto_integrador_1_b/mysql-connector-j-8.0.33.jar"/>
+	<classpathentry kind="lib" path="C:/Users/henri/OneDrive/Documentos/GitHub/projeto_integrador_/projeto_integrador_1_b/gson-2.2.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -89,7 +89,6 @@ public class Vacinacao {
 			
 			JOptionPane.showMessageDialog(null, "NÃO HÁ MAIS NENHUM REGISTRO DE ESQUEMA VACINAL", "Esquema Vacinal", 2);
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
 			JOptionPane.showMessageDialog(null, "ERRO AO CONSULTAR ESQUEMA VACINAL", "Erro", 0);
 		} finally {
 			connection.close();

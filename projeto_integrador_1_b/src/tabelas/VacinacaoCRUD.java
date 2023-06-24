@@ -164,7 +164,6 @@ public class VacinacaoCRUD {
 				nomeVacina+= ".";
 			}
 		
-			System.out.println(nomeVacina.length());
 			String  s = nomeVacina + " " + totalAplicacoes + " aplicações\n";
 		
 			sb.append(s);
